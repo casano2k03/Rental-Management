@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
+    'rest_framework_simplejwt',
+
 ]
 
 MIDDLEWARE = [
@@ -48,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -58,6 +61,8 @@ ROOT_URLCONF = 'backend.urls'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # Hoặc cụ thể CORS_ALLOWED_ORIGINS = ['http://localhost:4200']
 
 TEMPLATES = [
     {
