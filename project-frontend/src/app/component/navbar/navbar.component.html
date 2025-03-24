@@ -20,29 +20,41 @@
 
                 <div class="space-y-6 border-t border-gray-200 px-4 py-6">
                     <div class="space-y-6 px-4 py-6">
-                    <div class="flow-root">
-                        <a href="#" class="-m-2 block p-2 font-medium text-gray-900">Trang chủ</a>
+                        <div class="flow-root">
+                            <a href="#" class="-m-2 block p-2 font-medium text-gray-900">Trang chủ</a>
+                        </div>
+                        <div class="flow-root">
+                            <a href="#" class="-m-2 block p-2 font-medium text-gray-900">Quần áo</a>
+                        </div>
+                        <div class="flow-root">
+                            <a href="#" class="-m-2 block p-2 font-medium text-gray-900">Chính sách</a>
+                        </div>
+                        <div class="flow-root">
+                            <a href="#" class="-m-2 block p-2 font-medium text-gray-900">Liên hệ</a>
+                        </div>
                     </div>
-                    <div class="flow-root">
-                        <a href="#" class="-m-2 block p-2 font-medium text-gray-900">Quần áo</a>
-                    </div>
-                    <div class="flow-root">
-                        <a href="#" class="-m-2 block p-2 font-medium text-gray-900">Chính sách</a>
-                    </div>
-                    <div class="flow-root">
-                        <a href="#" class="-m-2 block p-2 font-medium text-gray-900">Liên hệ</a>
-                    </div>
-                </div>
 
 
                     <div class="space-y-6 border-t border-gray-200 px-4 py-6">
-                        <div class="flow-root">
+                        <!-- Hiển thị khi chưa đăng nhập -->
+                        <div *ngIf="!isLoggedIn" class="flow-root">
                             <a routerLink="/login" class="-m-2 block p-2 font-medium text-gray-900">Sign in</a>
                         </div>
-                        <div class="flow-root">
-                            <a routerLink="/register" href="#" class="-m-2 block p-2 font-medium text-gray-900">Create account</a>
+                        <div *ngIf="!isLoggedIn" class="flow-root">
+                            <a routerLink="/register" class="-m-2 block p-2 font-medium text-gray-900">Create
+                                account</a>
+                        </div>
+
+                        <!-- Hiển thị khi đã đăng nhập -->
+                        <div *ngIf="isLoggedIn" class="flow-root">
+                            <span class="block p-2 font-medium text-gray-900">
+                                👋 Hello, {{ user?.name }}
+                            </span>
+                            <a (click)="logout()" class="-m-2 block p-2 font-medium text-red-600 cursor-pointer">Sign
+                                out</a>
                         </div>
                     </div>
+
 
                     <div class="border-t border-gray-200 px-4 py-6">
                         <a href="#" class="-m-2 flex items-center p-2">
@@ -77,8 +89,10 @@
                         </svg>
                     </button>
                     <div class="ml-4 flex lg:ml-0">
-                        <a href="#" class="relative text-2xl font-bold text-gray-900 transition-all duration-300 transform hover:text-blue-600 hover:scale-105">
-                            <span class="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
+                        <a href="#"
+                            class="relative text-2xl font-bold text-gray-900 transition-all duration-300 transform hover:text-blue-600 hover:scale-105">
+                            <span
+                                class="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
                             Cheka
                         </a>
                     </div>
@@ -100,11 +114,18 @@
                         </div>
                     </div>
                     <div class="ml-auto flex items-center">
-                        <div class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                            <a routerLink="/login" class="text-sm font-medium text-gray-700 hover:text-gray-800">Sign in</a>
-                            <span class="h-6 w-px bg-gray-200" aria-hidden="true"></span>
-                            <a routerLink="/register" class="text-sm font-medium text-gray-700 hover:text-gray-800">Create account</a>
+                        <div class="ml-auto flex items-center">
+                            <div class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                                <a *ngIf="!isLoggedIn" routerLink="/login"
+                                    class="text-sm font-medium text-gray-700 hover:text-gray-800">Sign in</a>
+                                <a *ngIf="!isLoggedIn" routerLink="/register"
+                                    class="text-sm font-medium text-gray-700 hover:text-gray-800">Create account</a>
+
+                                <button *ngIf="isLoggedIn" (click)="logout()"
+                                    class="text-sm font-medium text-red-600 hover:text-red-800">Logout</button>
+                            </div>
                         </div>
+
 
                         <div class="hidden lg:ml-8 lg:flex">
                             <a href="#" class="flex items-center text-gray-700 hover:text-gray-800">
@@ -145,4 +166,5 @@
             </div>
         </nav>
     </header>
+
 </div>

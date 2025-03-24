@@ -22,26 +22,26 @@ export class LoginComponent {
   constructor(private authService: AuthService) {}
 
   login() {
+    console.log("Login function called!");
+    console.log("Username:", this.username);
+    console.log("Password:", this.password);
+  
+    if (!this.username || !this.password) {
+      this.error = 'Vui lòng nhập tài khoản và mật khẩu!';
+      return;
+    }
+  
     this.authService.login(this.username, this.password).subscribe({
-      next: (res) => {
-        this.token = res.token;
-        localStorage.setItem('token', res.token);
-        alert('Login successful!');
+      next: (response) => {
+        console.log("Login successful:", response);
+        alert('Đăng nhập thành công!');
+        window.location.href = '/';
       },
       error: (err) => {
-        this.error = 'Login failed!';
+        console.log("Login error:", err);
+        this.error = 'Đăng nhập thất bại! Kiểm tra lại tài khoản hoặc mật khẩu.';
       }
     });
   }
-
-  logout() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.authService.logout(token).subscribe(() => {
-        localStorage.removeItem('token');
-        this.token = null;
-        alert('Logged out!');
-      });
-    }
-  }
+  
 }
