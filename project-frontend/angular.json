@@ -16,6 +16,7 @@
             "outputPath": "dist/project-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            
             "polyfills": [
               "zone.js"
             ],
@@ -101,4 +102,5 @@
   "cli": {
     "analytics": "0adc16a8-2019-4531-bdf7-a121a0ab6e8f"
   }
+  
 }
