@@ -1,5 +1,6 @@
 from django.urls import path, include
-from .views import RegisterView, LoginView, LogoutAPI
+from .views import RegisterView, LoginView, LogoutAPI, MytokenObtainPairView, dashboard
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
 
@@ -8,8 +9,11 @@ urlpatterns = [
     path('logout/', LogoutAPI, name='logout'),
 
 
+    ##dashboard api
+    path('token/', MytokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('dashboard/', dashboard, name='dashboard'),
+
     ## API GOOGLE LOGIN
-    path('auth/', include('dj_rest_auth.urls')),  # API login/logout
-    path('auth/registration/', include('dj_rest_auth.registration.urls')),  # API đăng ký tài khoản
-    path('auth/social/', include('allauth.socialaccount.urls')),  # API OAuth2
+ # API OAuth2
 ]

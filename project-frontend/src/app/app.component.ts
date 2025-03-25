@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './component/navbar/navbar.component';
+import { NavbarComponent } from './user/component/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,5 +14,13 @@ import { RouterModule } from '@angular/router';
 })
 export class AppComponent {
   title = 'project-frontend';
+
+  constructor(private router: Router) {}
+
+  isAdminRoute(): boolean {
+    return this.router.url.startsWith('/admin'); // Kiểm tra nếu đang ở route admin
+  }
+
+
 
 }

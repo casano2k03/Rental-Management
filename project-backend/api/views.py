@@ -1,13 +1,14 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import RegisterSerializer
-from django.contrib.auth import authenticate
-from rest_framework.decorators import api_view,permission_classes
-from rest_framework.permissions import AllowAny  # Cho phép tất cả truy cập
+
 
 User = get_user_model()
 
@@ -36,7 +37,11 @@ def LoginView(request):
 
     if user:
         token, _ = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key, 'username': user.username})
+        return Response({
+            'token': token.key,
+            'username': user.username,
+            'role': "admin" if user.is_superuser else "user"  # Thêm role       
+        })
     else:
         return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
@@ -45,3 +50,12 @@ def LoginView(request):
 def LogoutAPI(request):
     request.auth.delete()
     return Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
+
+
+class MytokenObtainPairView(TokenObtainPairView):
+    pass
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def dashboard(request):
+    return Response({'message': 'You are authenticated', "user": request.user.username}, status=status.HTTP_200_OK)

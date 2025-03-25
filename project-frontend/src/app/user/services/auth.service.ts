@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { response } from 'express';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -17,34 +18,37 @@ export class AuthService {
   
   private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.checkLoginStatus());
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   register(userData: any): Observable<any>{
     return this.http.post(this.apiRegisterAccount, userData);
   }
   
   login(username: string, password: string): Observable<any> {
-    console.log("Calling login API:", this.apiLoginAccount);
-    console.log("Sending data:", { username, password });
+    return this.http.post<{ token: string; username: string; role: string }>(this.apiLoginAccount, { username, password })
+      .pipe(
+        tap(response => {
+          console.log("API response:", response); // Debug xem API trả về gì
   
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const body = JSON.stringify({ username, password });
+          if (response && response.token) {
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('user', response.username);
   
-    return this.http.post<{ token: string }>(this.apiLoginAccount, body, { headers }).pipe(
-      tap(response => {
-        console.log("Login response:", response);
-        
+            // Đảm bảo lấy đúng role từ API
+            const role = response.role || 'user';  
+            localStorage.setItem('role', role);
   
-        if (response && response.token) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('user', JSON.stringify(username));
-
-          this.isLoggedInSubject.next(true);
-        }
-      })
-    );
+            console.log("Saved role:", role);
+            this.router.navigate(['/admin']);
+          }
+        })
+      );
   }
   
+  
+  isAdmin(): boolean {
+    return localStorage.getItem('role') === 'admin';
+  }
   
   checkLoginStatus() {
     if (typeof window !== 'undefined') { // Kiểm tra nếu đang chạy trên trình duyệt
@@ -72,6 +76,8 @@ export class AuthService {
     }).pipe(
         tap(() => {
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('role');
             this.isLoggedInSubject.next(false);
         })
     );

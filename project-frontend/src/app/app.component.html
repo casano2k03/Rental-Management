@@ -1,6 +1,8 @@
 
+<ng-container *ngIf="!isAdminRoute()">
 
-<app-navbar class="fixed top-0 left-0 w-full bg-white shadow-md z-50"></app-navbar>
+  <app-navbar class="fixed top-0 left-0 w-full bg-white shadow-md z-50"></app-navbar>
+</ng-container>
 
 <main class="mt-20">
   <router-outlet>
