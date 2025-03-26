@@ -43,5 +43,8 @@ export class LoginComponent {
       }
     });
   }
+
+  loginWithGoogle() {}
+  loginWithFacebook() {}
   
 }

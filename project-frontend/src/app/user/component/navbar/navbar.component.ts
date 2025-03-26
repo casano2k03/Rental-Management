@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./navbar.component.css'],
   standalone: true,
   imports:[CommonModule, RouterModule],
-  
+    
 
 })
 export class NavbarComponent {

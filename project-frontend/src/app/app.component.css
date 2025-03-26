@@ -7,4 +7,20 @@ nav {
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  
+
+  a {
+    pointer-events: all !important;
+    cursor: pointer !important;
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Ensure router links are clickable */
+[routerLink] {
+    pointer-events: all !important;
+    cursor: pointer !important;
+}

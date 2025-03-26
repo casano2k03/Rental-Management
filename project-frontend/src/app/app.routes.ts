@@ -1,27 +1,28 @@
 import { Routes } from '@angular/router';
+import { UserComponent } from './user/user.component';
 import { HomeComponent } from './user/pages/home/home.component';
 import { LoginComponent } from './user/pages/auth/login/login.component';
 import { RegisterComponent } from './user/pages/auth/register/register.component';
-import { AdminComponent } from './admin/admin.component';
-import { DashboardComponent } from './admin/pages/dashboard/dashboard.component';
-import { AdminGuard } from './guard/admin.guard';
+import { ProductsComponent } from './user/pages/products/products.component';
+import { PolicyComponent } from './user/pages/policy/policy.component';
+import { ForgotPasswordComponent } from './user/pages/auth/forgot-password/forgot-password.component';
 
-export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-
-  // Admin có layout riêng, không dùng chung AppComponent
-  { 
-    path: 'admin', 
-    component: AdminComponent, 
-    canActivate: [AdminGuard], // Chỉ cho phép admin truy cập
+export const appRoutes: Routes = [
+  {
+    path: 'user',
+    component: UserComponent,
     children: [
-      { path: 'dashboard', component: DashboardComponent },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: '', component: HomeComponent },
+      { path: 'login', component: LoginComponent },
 
-    ]
+      { path: 'forgot-password', component: ForgotPasswordComponent }, // Route cho Quên mật khẩu
+
+      { path: 'register', component: RegisterComponent },
+      { path: 'products', component: ProductsComponent }, // Route cho trang sản phẩm
+      { path: 'policy', component: PolicyComponent }, // Route cho trang chính sách
+
+
+    ],
   },
-
-  { path: '**', redirectTo: '' }, // Nếu route sai, về trang chủ
+  { path: '', redirectTo: '/user', pathMatch: 'full' },
 ];

@@ -16,7 +16,6 @@
             "outputPath": "dist/project-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            
             "polyfills": [
               "zone.js"
             ],
@@ -35,7 +34,8 @@
             "outputMode": "server",
             "ssr": {
               "entry": "src/server.ts"
-            }
+            },
+            "baseHref": "/"
           },
           "configurations": {
             "production": {
@@ -102,5 +102,4 @@
   "cli": {
     "analytics": "0adc16a8-2019-4531-bdf7-a121a0ab6e8f"
   }
-  
 }
