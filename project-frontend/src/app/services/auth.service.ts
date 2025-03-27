@@ -47,9 +47,19 @@ export class AuthService {
   
   
   isAdmin(): boolean {
+    const user = this.getCurrentUser();
     return localStorage.getItem('role') === 'admin';
   }
   
+  getCurrentUser() {
+    const userStr = localStorage.getItem('this.USER_KEY');
+    return userStr ? JSON.parse(userStr) : null;
+  }
+
+  setCurrentUser(user: any) {
+    localStorage.setItem('this.USER_KEY', JSON.stringify(user));
+  }
+
   checkLoginStatus() {
     if (typeof window !== 'undefined') { // Kiểm tra nếu đang chạy trên trình duyệt
       return localStorage.getItem('token') !== null;
@@ -78,6 +88,7 @@ export class AuthService {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             localStorage.removeItem('role');
+            localStorage.removeItem('this.USER_KEY');
             this.isLoggedInSubject.next(false);
         })
     );

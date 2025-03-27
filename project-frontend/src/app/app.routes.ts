@@ -6,6 +6,9 @@ import { RegisterComponent } from './user/pages/auth/register/register.component
 import { ProductsComponent } from './user/pages/products/products.component';
 import { PolicyComponent } from './user/pages/policy/policy.component';
 import { ForgotPasswordComponent } from './user/pages/auth/forgot-password/forgot-password.component';
+import { AdminComponent } from './admin/admin.component';
+import { AdminDashboardComponent } from './admin/pages/admin-dashboard/admin-dashboard.component';
+import { AuthGuard } from './user/gaurd/auth.guard.spec';
 
 export const appRoutes: Routes = [
   {
@@ -25,4 +28,14 @@ export const appRoutes: Routes = [
     ],
   },
   { path: '', redirectTo: '/user', pathMatch: 'full' },
+
+  
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {path: 'dashboard', component: AdminDashboardComponent},
+    ]
+  }
 ];

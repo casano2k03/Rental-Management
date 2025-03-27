@@ -7,21 +7,30 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class AdminGuard implements CanActivate {
 
-  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   canActivate(): boolean {
-    // Kiểm tra xem Angular đang chạy trên trình duyệt
-    if (!isPlatformBrowser(this.platformId)) {
-      return false; // Nếu đang chạy trên server thì chặn luôn
+    // Check if we're in the browser
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const isAdmin = localStorage.getItem('role') === 'admin';
+        if (!isAdmin) {
+          this.router.navigate(['/user']);
+          return false;
+        }
+        return true;
+      } catch (error) {
+        console.error('Error accessing localStorage:', error);
+        this.router.navigate(['/user/login']);
+        return false;
+      }
     }
 
-    // Kiểm tra role trong localStorage
-    const isAdmin = localStorage.getItem('role') === 'admin';
-
-    if (!isAdmin) {
-      this.router.navigate(['/login']); // Nếu không phải admin thì chuyển hướng về login
-      return false;
-    }
-    return true;
+    // If we're on the server, deny access and redirect
+    this.router.navigate(['/user']);
+    return false;
   }
 }

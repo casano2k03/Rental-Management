@@ -8,6 +8,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import RegisterSerializer
+from .serializers import ProductSerializer, ProductImageSerializer, CustomerSerializer, RentalOrderSerializer
+from .models import Product, ProductImage, Customer, RentalOrder
+from rest_framework import viewsets
+
 
 
 User = get_user_model()
@@ -59,3 +63,24 @@ class MytokenObtainPairView(TokenObtainPairView):
 @permission_classes([IsAuthenticated])
 def dashboard(request):
     return Response({'message': 'You are authenticated', "user": request.user.username}, status=status.HTTP_200_OK)
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+
+class ProductImageViewSet(viewsets.ModelViewSet):
+    queryset = ProductImage.objects.all()
+    serializer_class = ProductImageSerializer
+    permission_classes = [AllowAny]
+
+class CustomerViewSet(viewsets.ModelViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    permission_classes = [IsAuthenticated]
+
+class RentalOrderViewSet(viewsets.ModelViewSet):
+    queryset = RentalOrder.objects.all()
+    serializer_class = RentalOrderSerializer
+    permission_classes = [IsAuthenticated]
