@@ -11,6 +11,9 @@ from .serializers import RegisterSerializer
 from .serializers import ProductSerializer, ProductImageSerializer, CustomerSerializer, RentalOrderSerializer
 from .models import Product, ProductImage, Customer, RentalOrder
 from rest_framework import viewsets
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.decorators import action
+from django.db import transaction
 
 
 
@@ -64,11 +67,80 @@ class MytokenObtainPairView(TokenObtainPairView):
 def dashboard(request):
     return Response({'message': 'You are authenticated', "user": request.user.username}, status=status.HTTP_200_OK)
 
+class ProductCreateAPIView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
+    parser_classes = (MultiPartParser, FormParser)
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        # Get product data and images from request
+        product_data = {
+            'name': request.data.get('name'),
+            'description': request.data.get('description'),
+            'price_per_day': request.data.get('price_per_day'),
+            'stock': request.data.get('stock'),
+            'category': request.data.get('category'),
+            'gender': request.data.get('gender'),
+            'size': request.data.get('size'),
+            'color': request.data.get('color'),
+            'brand': request.data.get('brand'),
+        }
+
+        # Create product using serializer
+        serializer = self.get_serializer(data=product_data)
+        serializer.is_valid(raise_exception=True)
+        product = serializer.save()
+
+        # Handle thumbnail
+        if 'thumbnail' in request.FILES:
+            product.thumbnail = request.FILES['thumbnail']
+            product.save()
+
+        # Handle multiple images
+        images = request.FILES.getlist('images')
+        for index, image in enumerate(images):
+            ProductImage.objects.create(
+                product=product,
+                image=image,
+                is_main=index == 0  # First image will be main image
+            )
+
+        # Return response with product data including images
+        return Response({
+            'message': 'Product created successfully',
+            'product': ProductSerializer(product).data
+        }, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'])
+    def add_images(self, request, pk=None):
+        """Add additional images to existing product"""
+        product = self.get_object()
+        images = request.FILES.getlist('images')
+        
+        added_images = []
+        for image in images:
+            product_image = ProductImage.objects.create(
+                product=product,
+                image=image
+            )
+            added_images.append(ProductImageSerializer(product_image).data)
+
+        return Response({
+            'message': 'Images added successfully',
+            'images': added_images
+        }, status=status.HTTP_201_CREATED)
 
 class ProductImageViewSet(viewsets.ModelViewSet):
     queryset = ProductImage.objects.all()

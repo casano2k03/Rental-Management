@@ -8,6 +8,7 @@ import { PolicyComponent } from './user/pages/policy/policy.component';
 import { ForgotPasswordComponent } from './user/pages/auth/forgot-password/forgot-password.component';
 import { AdminComponent } from './admin/admin.component';
 import { AdminDashboardComponent } from './admin/pages/admin-dashboard/admin-dashboard.component';
+import { ProductManagementComponent } from './admin/pages/product-management/product-management.component';
 import { AuthGuard } from './user/gaurd/auth.guard.spec';
 
 export const appRoutes: Routes = [
@@ -17,25 +18,20 @@ export const appRoutes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'login', component: LoginComponent },
-
-      { path: 'forgot-password', component: ForgotPasswordComponent }, // Route cho Quên mật khẩu
-
+      { path: 'forgot-password', component: ForgotPasswordComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'products', component: ProductsComponent }, // Route cho trang sản phẩm
-      { path: 'policy', component: PolicyComponent }, // Route cho trang chính sách
-
-
+      { path: 'products', component: ProductsComponent },
+      { path: 'policy', component: PolicyComponent }
     ],
   },
   { path: '', redirectTo: '/user', pathMatch: 'full' },
-
-  
   {
     path: 'admin',
     component: AdminComponent,
     canActivate: [AuthGuard],
     children: [
-      {path: 'dashboard', component: AdminDashboardComponent},
+      { path: 'dashboard', component: AdminDashboardComponent },
+      { path: 'products', component: ProductManagementComponent }
     ]
   }
 ];

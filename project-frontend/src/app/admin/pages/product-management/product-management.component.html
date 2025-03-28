@@ -1,0 +1,161 @@
+<div class="container p-4">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Product Management</h1>
+      <button (click)="showAddForm()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+        Add New Product
+      </button>
+    </div>
+
+    <!-- Product List -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price/Day</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let product of products">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <img [src]="product.images[0]?.image_url || 'assets/placeholder.png'" 
+                   class="h-12 w-12 object-cover rounded-lg" 
+                   [alt]="product.name">
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">{{product.name}}</td>
+            <td class="px-6 py-4 whitespace-nowrap">${{product.price_per_day}}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{product.stock}}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{product.category}}</td>
+            <td class="px-6 py-4 whitespace-nowrap space-x-2">
+              <button (click)="editProduct(product)" 
+                      class="text-blue-600 hover:text-blue-900">Edit</button>
+              <button (click)="deleteProduct(product.id)" 
+                      class="text-red-600 hover:text-red-900">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Add/Edit Form Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+      <div class="relative top-20 mx-auto p-5 border w-[600px] shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <h3 class="text-lg font-medium mb-4">{{editMode ? 'Edit Product' : 'Add New Product'}}</h3>
+          <form (ngSubmit)="onSubmit()" class="mt-4">
+            <!-- Basic Information -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                <input [(ngModel)]="currentProduct.name" name="name" type="text" 
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Price/Day</label>
+                <input [(ngModel)]="currentProduct.price_per_day" name="price_per_day" type="number" 
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+              <textarea [(ngModel)]="currentProduct.description" name="description" rows="3"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+
+            <!-- Product Details -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Stock</label>
+                <input [(ngModel)]="currentProduct.stock" name="stock" type="number" 
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+                <input [(ngModel)]="currentProduct.category" name="category" type="text" 
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Gender</label>
+                <select [(ngModel)]="currentProduct.gender" name="gender" 
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="unisex">Unisex</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Size</label>
+                <select [(ngModel)]="currentProduct.size" name="size" 
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                  <option value="">Select Size</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Color -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Color</label>
+              <input [(ngModel)]="currentProduct.color" name="color" type="text" 
+                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+
+            <!-- Images -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Images</label>
+              <input type="file" multiple (change)="onFileChange($event)" 
+                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+
+            <!-- Existing Images -->
+            <div *ngIf="currentProduct.images?.length" class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Current Images</label>
+              <div class="grid grid-cols-4 gap-2">
+                <div *ngFor="let image of currentProduct.images" class="relative">
+                  <img [src]="image.image_url || image.image" 
+                       class="w-full h-24 object-cover rounded-lg"
+                       [alt]="currentProduct.name">
+                  <span *ngIf="image.is_main" 
+                        class="absolute top-0 right-0 bg-blue-500 text-white text-xs px-2 py-1 rounded-bl-lg">
+                    Main
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Timestamps -->
+            <div *ngIf="editMode" class="grid grid-cols-2 gap-4 mb-4 text-sm text-gray-500">
+              <div>
+                <p>Created: {{currentProduct.created_at | date:'medium'}}</p>
+              </div>
+              <div>
+                <p>Updated: {{currentProduct.updated_at | date:'medium'}}</p>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-between mt-6">
+              <button type="submit" 
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                {{editMode ? 'Update' : 'Add'}}
+              </button>
+              <button type="button" (click)="closeModal()" 
+                      class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
