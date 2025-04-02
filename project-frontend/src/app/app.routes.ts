@@ -10,6 +10,7 @@ import { AdminComponent } from './admin/admin.component';
 import { AdminDashboardComponent } from './admin/pages/admin-dashboard/admin-dashboard.component';
 import { ProductManagementComponent } from './admin/pages/product-management/product-management.component';
 import { AuthGuard } from './user/gaurd/auth.guard.spec';
+import { ProfileComponent } from './user/pages/profile/profile.component';
 
 export const appRoutes: Routes = [
   {
@@ -21,7 +22,9 @@ export const appRoutes: Routes = [
       { path: 'forgot-password', component: ForgotPasswordComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'products', component: ProductsComponent },
-      { path: 'policy', component: PolicyComponent }
+      { path: 'policy', component: PolicyComponent },
+
+      { path: 'profile',component: ProfileComponent}
     ],
   },
   { path: '', redirectTo: '/user', pathMatch: 'full' },

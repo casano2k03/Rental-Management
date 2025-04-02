@@ -53,6 +53,8 @@ export class ProductManagementComponent implements OnInit {
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
+
+  
   selectedFiles: File[] = [];
 
   constructor(private productService: ProductService) {}
@@ -60,7 +62,7 @@ export class ProductManagementComponent implements OnInit {
   ngOnInit() {
     this.loadProducts();
   }
-
+ 
   loadProducts() {
     this.productService.getProducts().subscribe(
       (data) => {
