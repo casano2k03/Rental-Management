@@ -8,7 +8,15 @@ export interface ProductImage {
     product: number;
   }
   
-  export interface Product {
+export enum ProductStatus {
+  AVAILABLE = 'available',
+  RENTED = 'rented',
+  CLEANING = 'cleaning',
+  MAINTENANCE = 'maintenance',
+  UNAVAILABLE = 'unavailable'
+}
+
+export interface Product {
     id: number;
     name: string;
     description: string;
@@ -21,5 +29,8 @@ export interface ProductImage {
     images: ProductImage[];
     created_at: string;
     updated_at: string;
+    status: ProductStatus;
+    availableQuantity: number;
+    totalQuantity: number;
+    cleaningCount: number;
   }
-  
