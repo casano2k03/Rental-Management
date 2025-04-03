@@ -25,4 +25,12 @@ export class ProductService {
   deleteProduct(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}/`);
   }
+
+  deleteMultipleProducts(ids: number[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/delete-multiple/`, { ids },{
+      headers: {'Content-Type': 'application/json'}
+    });
+    
+
+  }
 }
