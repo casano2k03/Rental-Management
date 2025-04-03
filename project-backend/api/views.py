@@ -11,7 +11,7 @@ from .serializers import RegisterSerializer
 from .serializers import ProductSerializer, ProductImageSerializer, CustomerSerializer, RentalOrderSerializer
 from .models import Product, ProductImage, Customer, RentalOrder
 from rest_framework import viewsets
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.decorators import action
 from django.db import transaction
 
@@ -81,7 +81,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)  # Ensure JSONParser is included
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -141,6 +141,25 @@ class ProductViewSet(viewsets.ModelViewSet):
             'message': 'Images added successfully',
             'images': added_images
         }, status=status.HTTP_201_CREATED)
+    
+    @action(detail=False, methods=['post'], url_path='delete-multiple')
+    def delete_multiple(self, request):
+        """
+        Delete multiple products by their IDs.
+        """
+        ids = request.data.get('ids', [])
+        if not ids:
+            return Response({'error': 'No IDs provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filter and delete products
+        products_to_delete = Product.objects.filter(id__in=ids)
+        if not products_to_delete.exists():
+            return Response({'error': 'No matching products found'}, status=status.HTTP_404_NOT_FOUND)
+
+        count = products_to_delete.count()
+        products_to_delete.delete()
+
+        return Response({'message': f'{count} products deleted successfully'}, status=status.HTTP_200_OK)
 
 class ProductImageViewSet(viewsets.ModelViewSet):
     queryset = ProductImage.objects.all()

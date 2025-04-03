@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../../app/user/services/product-service/product-service';
+import { response } from 'express';
 
 interface ProductImage {
   id: number;
@@ -26,6 +27,7 @@ interface Product {
   images: ProductImage[];
   created_at: string;
   updated_at: string;
+  selected? : boolean;
 }
 
 @Component({
@@ -160,6 +162,39 @@ export class ProductManagementComponent implements OnInit {
         error => console.error('Error deleting product:', error)
       );
     }
+  }
+
+  toggleSelectAll(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.products.forEach(product => product.selected = isChecked);
+  }
+
+  deleteSelectedProducts(): void{
+    const selectedProducts = this.products.filter(product => product.selected);
+
+    if (selectedProducts.length === 0){
+      alert('Please select at least one product to delete.');
+
+      return;
+    }
+
+    if (!confirm('Are you sure you want to delete the selected products?')) {
+      return;
+    
+    }
+    const selectedIds = selectedProducts.map(product => product.id);
+    this.productService.deleteMultipleProducts(selectedIds).subscribe({
+      next: (response: any) =>{
+        alert(response.message);
+        this.loadProducts();
+      },
+      error: (err: any) => console.error('Error deleting Products:', err)
+
+    });
+    
+  }
+  hasSelectedProducts(): boolean{
+    return this.products.some(product => product.selected);
   }
 }
 
